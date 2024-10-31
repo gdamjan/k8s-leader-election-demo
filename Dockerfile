@@ -25,9 +25,8 @@ WORKDIR /src
 # `--locked` - makes sure the uv.lock file is in sync with `pyproject.toml`
 
 # Install dependencies in their own layer
+COPY uv.lock pyproject.toml /src
 RUN --mount=type=cache,target=/cache \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-dev --no-editable --no-install-project
 
 # Copy the project into the builder - COPY is affected by `.dockerignore`
