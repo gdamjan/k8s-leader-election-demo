@@ -1,7 +1,7 @@
 [project]
 name = "leader-election"
 version = "0.1.0"
-description = "Add your description here"
+description = "Demo Leader Election with a Kubernetes Lease Object"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -20,3 +20,6 @@ dev = [
     "pytest>=8.3.3",
     "ruff>=0.7.1",
 ]
+
+[tool.ruff.lint]
+ignore = ["E401"]
