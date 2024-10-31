@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: default
   name: leader-election
   labels:
     app.kubernetes.io/name: leader-election
@@ -14,10 +13,12 @@ spec:
     metadata:
       labels:
         app: leader-election
+        app.kubernetes.io/name: leader-election
     spec:
+      serviceAccountName: leader-election-sa
       containers:
       - name: leader-election
-        image: myregistry/leader-election:latest  # Replace with your image path
+        image: registry.localhost/leader-election
         imagePullPolicy: Always
         env:
         - name: NAMESPACE
@@ -33,7 +34,7 @@ spec:
         - name: RETRY_INTERVAL_SECONDS
           value: "2"  # Retry interval for failed attempts
         - name: GRANIAN_PORT
-          value: 8000
+          value: "8000"
         ports:
         - containerPort: 8000
           name: http-web-svc
