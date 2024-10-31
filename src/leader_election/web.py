@@ -1,19 +1,32 @@
 from flask import Flask
-import os
+
+from .k8s_lease import run_leader_election
+
+import os, signal
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def index():
-    return "<p>Hello, World!</p>"
+    leader = state["LEADER_ID"]
+    self = state["SELF_ID"]
+    return f"""\
+<p>Hello, World!</p>
+Leader: {leader}<br>
+Self: {self}<br>
+"""
 
 
 @app.route("/crash", methods=["POST"])
 def crash():
-    # TODO: crash granian process
-    os.kill(1, 9)
-    return "crash"
+    ppid = os.getppid()
+    print(f"pid: {os.getpid()}, ppid: {ppid}", flush=True)
+    print(f"Sending SIGTERM to {ppid}", flush=True)
+    os.kill(ppid, signal.SIGTERM)
+    self = state["SELF_ID"]
+    return f"crash {self}!"
 
 
-# TODO: run run_leader_election in a thread, use shared state
+# Run in background and maintain the leader election lease
+state = run_leader_election()
