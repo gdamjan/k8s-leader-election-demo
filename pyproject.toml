@@ -1,0 +1,15 @@
+[project]
+name = "leader-election"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.0.3",
+    "granian>=1.6.3",
+    "kubernetes>=31.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

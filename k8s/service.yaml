@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: leader-election
+spec:
+  selector:
+    app.kubernetes.io/name: leader-election
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http-web-svc

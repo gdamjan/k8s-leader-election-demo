@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: default
+  name: leader-election
+  labels:
+    app.kubernetes.io/name: leader-election
+spec:
+  replicas: 3  # Number of replicas; only one will be the leader
+  selector:
+    matchLabels:
+      app: leader-election
+  template:
+    metadata:
+      labels:
+        app: leader-election
+    spec:
+      containers:
+      - name: leader-election
+        image: myregistry/leader-election:latest  # Replace with your image path
+        imagePullPolicy: Always
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: LEASE_NAME
+          value: "leader-lease"  # Same as the Lease name used in the program
+        - name: LEASE_DURATION_SECONDS
+          value: "15"  # Duration of the lease in seconds
+        - name: RENEW_INTERVAL_SECONDS
+          value: "5"  # Interval to renew the lease
+        - name: RETRY_INTERVAL_SECONDS
+          value: "2"  # Retry interval for failed attempts
+        - name: GRANIAN_PORT
+          value: 8000
+        ports:
+        - containerPort: 8000
+          name: http-web-svc
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
