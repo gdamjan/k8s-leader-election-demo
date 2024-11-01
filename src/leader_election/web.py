@@ -1,6 +1,6 @@
 from flask import Flask
 
-from .k8s_lease import run_leader_election
+from .k8s_lease import run_leader_election, load_config
 
 import os, signal
 
@@ -9,12 +9,10 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    leader = state["LEADER_ID"]
-    self = state["SELF_ID"]
     return f"""\
 <p>Hello, World!</p>
-Leader: {leader}<br>
-Self: {self}<br>
+Leader: {state.current_leader_id}<br>
+Self: {state.self_id}<br>
 """
 
 
@@ -24,9 +22,9 @@ def crash():
     print(f"pid: {os.getpid()}, ppid: {ppid}", flush=True)
     print(f"Sending SIGTERM to {ppid}", flush=True)
     os.kill(ppid, signal.SIGTERM)
-    self = state["SELF_ID"]
-    return f"crash {self}!"
+    return f"crash {state.self_id}!"
 
 
 # Run in background and maintain the leader election lease
-state = run_leader_election()
+config = load_config()
+state = run_leader_election(config)
