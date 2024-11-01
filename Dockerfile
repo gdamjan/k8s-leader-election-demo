@@ -48,6 +48,7 @@ COPY --from=builder /app/ /app/
 ENV PATH=/app/bin:$PATH
 
 ENV \
+    GRANIAN_LOG_ACCESS_ENABLED=1 \
     GRANIAN_HOST=0.0.0.0 \
     GRANIAN_PORT=8000
 
